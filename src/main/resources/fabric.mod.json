@@ -11,8 +11,11 @@
 	"icon": "assets/anticheat/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"com.mikadev.Anticheat"
+        "main": [
+            "com.mikadev.Anticheat"
+        ],
+		"server": [
+			"com.mikadev.AnticheatServer"
 		],
 		"client": [
 			"com.mikadev.AnticheatClient"

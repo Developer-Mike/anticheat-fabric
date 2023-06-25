@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mikadev.Anticheat;
+import com.mikadev.AnticheatServer;
 import com.mojang.authlib.properties.PropertyMap;
 
 @Mixin(ServerLoginNetworkHandler.class)
@@ -31,11 +32,11 @@ public class PlayerConnectMixin {
                     .map(property -> property.getValue()).toArray(String[]::new);
 
             for (String resourcePack : resourcePacks) {
-                if (!Anticheat.allowedResourcePacks.contains(resourcePack)) {
+                if (!AnticheatServer.allowedResourcePacks.contains(resourcePack)) {
                     Anticheat.LOGGER.info(String.format("%s is using illegal resource packs (%s)",
                             networkHandlerAccessor.getProfile().getName(), String.join(", ", resourcePacks)));
 
-                    if (Anticheat.instantBanResourcePacks.contains(resourcePack)) {
+                    if (AnticheatServer.instantBanResourcePacks.contains(resourcePack)) {
                         networkHandlerAccessor.getServer().getPlayerManager().getUserBanList().add(
                                 new BannedPlayerEntry(networkHandlerAccessor.getProfile(), null, null, null,
                                         "You are using highly illegal resource packs."));
@@ -52,11 +53,11 @@ public class PlayerConnectMixin {
                     .map(property -> property.getValue()).toArray(String[]::new);
 
             for (String mod : mods) {
-                if (!Anticheat.allowedMods.contains(mod)) {
+                if (!AnticheatServer.allowedMods.contains(mod)) {
                     Anticheat.LOGGER.info(String.format("%s is using illegal mods (%s)",
                             networkHandlerAccessor.getProfile().getName(), String.join(", ", mods)));
 
-                    if (Anticheat.instantBanMods.contains(mod)) {
+                    if (AnticheatServer.instantBanMods.contains(mod)) {
                         networkHandlerAccessor.getServer().getPlayerManager().getUserBanList().add(
                                 new BannedPlayerEntry(networkHandlerAccessor.getProfile(), null, null, null,
                                         "You are using highly illegal modifications."));
