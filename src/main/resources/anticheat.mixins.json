@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "com.mikadev.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+        "ServerLoginNetworkHandlerAccessor",
+		"PlayerConnectMixin"
+	],
+	"server": [
+        "ServerLoginNetworkHandlerAccessor",
+		"PlayerConnectMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

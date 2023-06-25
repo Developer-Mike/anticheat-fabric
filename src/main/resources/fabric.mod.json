@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "anticheat",
+	"version": "1.0",
+	"name": "Anticheat",
+	"description": "Anticheat for Fabric",
+	"authors": [
+		"MikaDev"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/anticheat/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.mikadev.Anticheat"
+		],
+		"client": [
+			"com.mikadev.AnticheatClient"
+		]
+	},
+	"mixins": [
+		"anticheat.mixins.json",
+		{
+			"config": "anticheat.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.20.1",
+		"java": ">=17"
+	}
+}
