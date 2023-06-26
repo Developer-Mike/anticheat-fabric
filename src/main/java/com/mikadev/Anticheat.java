@@ -10,8 +10,7 @@ public class Anticheat implements ModInitializer {
     public static final String MOD_ID = "anticheat";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final Identifier USED_RESOURCE_PACKS_IDENTIFIER = new Identifier(MOD_ID, "used_resource_packs");
-    public static final Identifier USED_MODS_IDENTIFIER = new Identifier(MOD_ID, "used_mods");
+    public static final Identifier USED_RESOURCES_IDENTIFIER = new Identifier(MOD_ID, "used_resources");
 
     @Override
     public void onInitialize() {

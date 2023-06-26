@@ -64,14 +64,22 @@ public class AnticheatServer implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         loadConfig();
 
-        ServerLoginConnectionEvents.QUERY_START.register((netHandler, server, packetSender, sync) -> packetSender
-                .sendPacket(Anticheat.USED_RESOURCE_PACKS_IDENTIFIER, ResourcesPacket.REQUEST_PACKET));
+        ServerLoginConnectionEvents.QUERY_START.register((netHandler, server, packetSender, sync) -> {
+            packetSender.sendPacket(Anticheat.USED_RESOURCES_IDENTIFIER, ResourcesPacket.REQUEST_PACKET);
+        });
 
-        ServerLoginNetworking.registerGlobalReceiver(Anticheat.USED_RESOURCE_PACKS_IDENTIFIER,
+        ServerLoginNetworking.registerGlobalReceiver(Anticheat.USED_RESOURCES_IDENTIFIER,
                 (server, handler, understood, buf, sync, responseSender) -> {
                     sync.waitFor(server.submit(() -> {
+                        if (!understood) {
+                            Anticheat.LOGGER.info("Client did not understand packet.");
+                            handler.disconnect(Text.literal("Please install the Anticheat mod."));
+                            return;
+                        }
+
                         try {
-                            String[] usedResourcePacks = ResourcesPacket.readResourcePacket(buf);
+                            String[][] response = ResourcesPacket.readResourcePacket(buf);
+                            String[] usedResourcePacks = response[0];
 
                             for (String resourcePack : usedResourcePacks) {
                                 if (!allowedResourcePacks.contains(resourcePack)) {
@@ -89,23 +97,8 @@ public class AnticheatServer implements DedicatedServerModInitializer {
                                     }
                                 }
                             }
-                        } catch (Exception e) {
-                            String disconnectMessage = "Couldn't read package: " + e.getMessage();
 
-                            Anticheat.LOGGER.error(disconnectMessage);
-                            handler.disconnect(Text.literal(disconnectMessage));
-                        }
-                    }));
-                });
-
-        ServerLoginConnectionEvents.QUERY_START.register((netHandler, server, packetSender, sync) -> packetSender
-                .sendPacket(Anticheat.USED_MODS_IDENTIFIER, ResourcesPacket.REQUEST_PACKET));
-
-        ServerLoginNetworking.registerGlobalReceiver(Anticheat.USED_MODS_IDENTIFIER,
-                (server, handler, understood, buf, sync, responseSender) -> {
-                    sync.waitFor(server.submit(() -> {
-                        try {
-                            String[] usedMods = ResourcesPacket.readResourcePacket(buf);
+                            String[] usedMods = response[1];
 
                             for (String mod : usedMods) {
                                 if (!allowedMods.contains(mod)) {
@@ -132,58 +125,3 @@ public class AnticheatServer implements DedicatedServerModInitializer {
                 });
     }
 }
-
-/*
- * if (!properties.containsKey(Anticheat.KEY_USED_RESOURCE_PACKS)
- * || !properties.containsKey(Anticheat.KEY_USED_MODS)) {
- * networkHandler.disconnect(Text.of("Please install the Anticheat mod."));
- * 
- * info.cancel();
- * return;
- * } else {
- * String[] resourcePacks =
- * properties.get(Anticheat.KEY_USED_RESOURCE_PACKS).stream()
- * .map(property -> property.getValue()).toArray(String[]::new);
- * 
- * for (String resourcePack : resourcePacks) {
- * if (!AnticheatServer.allowedResourcePacks.contains(resourcePack)) {
- * Anticheat.LOGGER.info(String.format("%s is using illegal resource packs (%s)"
- * ,
- * networkHandlerAccessor.getProfile().getName(), String.join(", ",
- * resourcePacks)));
- * 
- * if (AnticheatServer.instantBanResourcePacks.contains(resourcePack)) {
- * networkHandlerAccessor.getServer().getPlayerManager().getUserBanList().add(
- * new BannedPlayerEntry(networkHandlerAccessor.getProfile(), null, null, null,
- * "You are using highly illegal resource packs."));
- * } else {
- * networkHandler.disconnect(Text.of("You are using illegal resourcepacks."));
- * }
- * 
- * info.cancel();
- * return;
- * }
- * }
- * 
- * String[] mods = properties.get(Anticheat.KEY_USED_MODS).stream()
- * .map(property -> property.getValue()).toArray(String[]::new);
- * 
- * for (String mod : mods) {
- * if (!AnticheatServer.allowedMods.contains(mod)) {
- * Anticheat.LOGGER.info(String.format("%s is using illegal mods (%s)",
- * networkHandlerAccessor.getProfile().getName(), String.join(", ", mods)));
- * 
- * if (AnticheatServer.instantBanMods.contains(mod)) {
- * networkHandlerAccessor.getServer().getPlayerManager().getUserBanList().add(
- * new BannedPlayerEntry(networkHandlerAccessor.getProfile(), null, null, null,
- * "You are using highly illegal modifications."));
- * } else {
- * networkHandler.disconnect(Text.of("You are using illegal modifications."));
- * }
- * 
- * info.cancel();
- * return;
- * }
- * }
- * }
- */

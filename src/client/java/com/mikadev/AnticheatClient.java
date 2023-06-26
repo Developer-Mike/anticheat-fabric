@@ -12,17 +12,10 @@ public class AnticheatClient implements ClientModInitializer {
     public void onInitializeClient() {
         System.out.println("AnticheatClient initialized!");
 
-        ClientLoginNetworking.registerGlobalReceiver(Anticheat.USED_RESOURCE_PACKS_IDENTIFIER,
+        ClientLoginNetworking.registerGlobalReceiver(Anticheat.USED_RESOURCES_IDENTIFIER,
                 (client, handler, buf, responseSender) -> {
                     return client.submit(() -> {
-                        return ResourcesPacket.createResourcePacket(getResourcePacks());
-                    });
-                });
-
-        ClientLoginNetworking.registerGlobalReceiver(Anticheat.USED_MODS_IDENTIFIER,
-                (client, handler, buf, responseSender) -> {
-                    return client.submit(() -> {
-                        return ResourcesPacket.createResourcePacket(getMods());
+                        return ResourcesPacket.createResourcePacket(getResourcePacks(), getMods());
                     });
                 });
     }
