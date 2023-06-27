@@ -21,7 +21,7 @@ public class ResourcePackDisabler {
                 .builder(message, button -> optionsScreenAccessor.getClient().setScreen((Screen) screenSupplier.get()))
                 .build();
 
-        if (message.getString().equals(Text.translatable((String) "options.resourcepack").getString())
+        if (message.getString().equals(Text.translatable("options.resourcepack").getString())
                 && !MinecraftClient.getInstance().isConnectedToLocalServer()
                 && MinecraftClient.getInstance().world != null) {
             buttonWidget.active = false;

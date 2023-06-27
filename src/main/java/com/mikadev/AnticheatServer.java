@@ -3,6 +3,8 @@ package com.mikadev;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
+import net.minecraft.server.BannedIpEntry;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -84,7 +86,11 @@ public class AnticheatServer implements DedicatedServerModInitializer {
                             for (String resourcePack : usedResourcePacks) {
                                 if (!allowedResourcePacks.contains(resourcePack)) {
                                     if (instantBanResourcePacks.contains(resourcePack)) {
-                                        // TODO: Ban player
+                                        BannedIpEntry banEntry = new BannedIpEntry(
+                                                ((ServerLoginNetworkHandlerAccessor) handler).getConnection()
+                                                        .getAddress().toString(),
+                                                null, null, null, "You used highly illegal resource packs.");
+                                        server.getPlayerManager().getIpBanList().add(banEntry);
 
                                         Anticheat.LOGGER.info("Instant banned player for using " + resourcePack);
                                         handler.disconnect(
@@ -103,7 +109,11 @@ public class AnticheatServer implements DedicatedServerModInitializer {
                             for (String mod : usedMods) {
                                 if (!allowedMods.contains(mod)) {
                                     if (instantBanMods.contains(mod)) {
-                                        // TODO: Ban player
+                                        BannedIpEntry banEntry = new BannedIpEntry(
+                                                ((ServerLoginNetworkHandlerAccessor) handler).getConnection()
+                                                        .getAddress().toString(),
+                                                null, null, null, "You used highly illegal mods.");
+                                        server.getPlayerManager().getIpBanList().add(banEntry);
 
                                         Anticheat.LOGGER.info("Instant banned player for using " + mod);
                                         handler.disconnect(Text.literal("You are using highly illegal modifications."));
