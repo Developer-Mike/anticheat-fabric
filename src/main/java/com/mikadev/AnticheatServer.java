@@ -87,6 +87,8 @@ public class AnticheatServer implements DedicatedServerModInitializer {
                             String ipAddress = ((ServerLoginNetworkHandlerAccessor) handler).getConnection()
                                     .getAddress().toString().split(":")[0].replace("/", "");
 
+                            Anticheat.LOGGER.info("Player " + ipAddress + " is using "
+                                    + String.join(", ", usedResourcePacks));
                             for (String resourcePack : usedResourcePacks) {
                                 if (!allowedResourcePacks.contains(resourcePack)) {
                                     if (instantBanResourcePacks.contains(resourcePack)) {
