@@ -24,7 +24,7 @@ public class AnticheatClient implements ClientModInitializer {
         return MinecraftClient.getInstance().getResourcePackManager()
                 .getEnabledProfiles()
                 .stream()
-                .map(resourcePack -> resourcePack.getName())
+                .map(resourcePack -> resourcePack.getId())
                 .toArray(String[]::new);
     }
 
